@@ -10,5 +10,7 @@ protoc -I./proto --grpc-gateway_out=./proto \
 proto/calculator/calculator.proto
 
 # gen swagger.json
-protoc -I./proto --openapiv2_out=./proto --openapiv2_opt=logtostderr=true \
+# disable_default_errors this flag will generate default unexpected error response model
+protoc -I./proto --openapiv2_out=./proto \
+--openapiv2_opt=logtostderr=true,disable_default_errors=true \
 proto/calculator/calculator.proto
