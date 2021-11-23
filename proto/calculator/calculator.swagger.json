@@ -29,12 +29,6 @@
           "204": {
             "description": "A successful response.",
             "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
           }
         },
         "parameters": [
@@ -58,12 +52,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/calculatorCalculatorResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -95,45 +83,14 @@
           "type": "string",
           "format": "int64"
         }
-      },
-      "required": [
-        "a"
-      ]
+      }
     },
     "calculatorCalculatorResponse": {
       "type": "object",
       "properties": {
         "result": {
           "type": "string",
-          "format": "int64",
-          "title": "Optional"
-        }
-      }
-    },
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "@type": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": {}
-    },
-    "rpcStatus": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          }
+          "format": "int64"
         }
       }
     }
