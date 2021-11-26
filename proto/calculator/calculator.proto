@@ -4,6 +4,8 @@ package calculator;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/any.proto";
+import "google/api/field_behavior.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/penril0326/hello_grpc/calculator";
@@ -11,17 +13,18 @@ option go_package = "github.com/penril0326/hello_grpc/calculator";
 message CalculatorRequest {
     int64 a = 1;
     int64 b = 2;
-
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-        json_schema: {
-            required: ["a"]
-        }
-    };
 }
 
 message CalculatorResponse {
-    // Optional
-    int64 result = 1;
+    int32 code = 1 [ (google.api.field_behavior) = OPTIONAL ];
+    int64 result = 2 [ (google.api.field_behavior) = REQUIRED ];
+    google.protobuf.Any custom = 3;
+}
+
+message TestAny {
+    string str1 = 1;
+    int64 int1 = 2;
+    repeated int64 ints = 3;
 }
 
 message DeleteTest {
@@ -31,7 +34,7 @@ message DeleteTest {
 service CalculatorService {
     rpc Sum (CalculatorRequest) returns (CalculatorResponse) {
         option (google.api.http) = {
-            post: "/v1/sum"
+            post: "/v1/sum/{a}"
             body: "*"
         };
     }
@@ -45,7 +48,7 @@ service CalculatorService {
             responses: {
               key: "204"
               value: {
-                description: "A successful response."
+                description: "A successful response.";
               }
             }
         };

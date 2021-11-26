@@ -43,6 +43,23 @@ func request_CalculatorService_Sum_0(ctx context.Context, marshaler runtime.Mars
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["a"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
+	}
+
+	protoReq.A, err = runtime.Int64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
+	}
+
 	msg, err := client.Sum(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
@@ -58,6 +75,23 @@ func local_request_CalculatorService_Sum_0(ctx context.Context, marshaler runtim
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["a"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
+	}
+
+	protoReq.A, err = runtime.Int64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
 
 	msg, err := server.Sum(ctx, &protoReq)
@@ -129,7 +163,7 @@ func RegisterCalculatorServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/calculator.CalculatorService/Sum", runtime.WithHTTPPathPattern("/v1/sum"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/calculator.CalculatorService/Sum", runtime.WithHTTPPathPattern("/v1/sum/{a}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -214,7 +248,7 @@ func RegisterCalculatorServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/calculator.CalculatorService/Sum", runtime.WithHTTPPathPattern("/v1/sum"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/calculator.CalculatorService/Sum", runtime.WithHTTPPathPattern("/v1/sum/{a}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -254,7 +288,7 @@ func RegisterCalculatorServiceHandlerClient(ctx context.Context, mux *runtime.Se
 }
 
 var (
-	pattern_CalculatorService_Sum_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "sum"}, ""))
+	pattern_CalculatorService_Sum_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "sum", "a"}, ""))
 
 	pattern_CalculatorService_Deletetest_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "delete", "id"}, ""))
 )

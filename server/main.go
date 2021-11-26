@@ -2,15 +2,15 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net"
 
 	pb "github.com/penril0326/hello_grpc/proto/calculator"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
-	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -36,17 +36,27 @@ func main() {
 
 func (s *Server) Sum(ctx context.Context, req *pb.CalculatorRequest) (*pb.CalculatorResponse, error) {
 	fmt.Printf("Receive...: %v\n", req)
-	// a := req.GetA()
-	// b := req.GetB()
+	resp := &pb.CalculatorResponse{
+		Result: req.GetA() + req.GetB(),
+	}
 
-	// resp := pb.CalculatorResponse{
-	// 	Result: a + b,
-	// }
+	any := &pb.TestAny{
+		Str1: "test1",
+		Int1: 100,
+		Ints: []int64{1, 2, 3, 4, 5},
+	}
 
-	return nil, status.Error(codes.Aborted, "asda")
+	anyproto, err := anypb.New(any)
+	if err != nil {
+		return nil, errors.New("any marshal failed")
+	}
+
+	resp.Custom = anyproto
+
+	return resp, nil
 }
 
 func (s *Server) Deletetest(ctx context.Context, req *pb.DeleteTest) (*emptypb.Empty, error) {
-	grpc.SetHeader(ctx, metadata.Pairs("X-Http-Code", "211"))
+	grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "204"))
 	return &emptypb.Empty{}, nil
 }
