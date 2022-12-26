@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+option go_package = "proto/calculator";
+
+import "google/api/annotations.proto";
+// import "google/protobuf/empty.proto";
+// import "google/protobuf/any.proto";
+import "google/api/field_behavior.proto";
+// import "proto/protoc-gen-openapiv2/options/annotations.proto";
+
+message CalculatorRequest {
+    int64 a = 1;
+    int64 b = 2;
+}
+
+message CalculatorResponse {
+    int32 code = 1 [ (google.api.field_behavior) = OPTIONAL ];
+    int64 result = 2 [ (google.api.field_behavior) = REQUIRED ];
+    // google.protobuf.Any custom = 3;
+}
+
+service CalculatorService {
+    rpc Sum (CalculatorRequest) returns (CalculatorResponse) {
+        option (google.api.http) = {
+            post: "/v1/sum"
+            body: "*"
+        };
+    }
+
+    rpc Diff (CalculatorRequest) returns (CalculatorResponse) {
+        option (google.api.http) = {
+            post: "/v1/diff"
+            body: "*"
+        };
+
+        // option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+        //     responses: {
+        //       key: "200"
+        //       value: {
+        //         description: "A successful response.";
+        //       }
+        //     }
+        // };
+    }
+}
