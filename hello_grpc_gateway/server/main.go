@@ -2,20 +2,18 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"net"
 
-	pb "github.com/penril0326/hello_grpc/proto/calculator"
+	pb "hello_grpc_gateway/proto/test"
+
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
-	"google.golang.org/protobuf/types/known/anypb"
-	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
 type Server struct {
-	pb.UnimplementedCalculatorServiceServer
+	pb.UnimplementedTestServiceServer
 }
 
 func main() {
@@ -27,36 +25,30 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterCalculatorServiceServer(grpcServer, &Server{})
+	pb.RegisterTestServiceServer(grpcServer, &Server{})
 
 	if err := grpcServer.Serve(l); err != nil {
 		log.Fatalf("Failed to serve gRPC: %s\n", err.Error())
 	}
 }
 
-func (s *Server) Sum(ctx context.Context, req *pb.CalculatorRequest) (*pb.CalculatorResponse, error) {
-	fmt.Printf("Receive...: %v\n", req)
-	resp := &pb.CalculatorResponse{
-		Result: req.GetA() + req.GetB(),
+func (s *Server) Test(ctx context.Context, req *pb.TestRequest) (*pb.TestResponse, error) {
+	allow := []string{
+		"b_i",
+		"n",
 	}
 
-	any := &pb.TestAny{
-		Str1: "test1",
-		Int1: 100,
-		Ints: []int64{1, 2, 3, 4, 5},
-	}
+	allowMask, _ := fieldmaskpb.New(&pb.TestRequest{}, allow...)
+	fmt.Println("allow = ", allowMask.GetPaths())
+	intersect := fieldmaskpb.Intersect(allowMask, req.GetFields())
+	intersect.Normalize()
 
-	anyproto, err := anypb.New(any)
-	if err != nil {
-		return nil, errors.New("any marshal failed")
-	}
+	valid := intersect.GetPaths()
 
-	resp.Custom = anyproto
+	fmt.Println(valid)
 
-	return resp, nil
-}
-
-func (s *Server) Deletetest(ctx context.Context, req *pb.DeleteTest) (*emptypb.Empty, error) {
-	grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "204"))
-	return &emptypb.Empty{}, nil
+	return &pb.TestResponse{
+		Code:   200,
+		Result: 10,
+	}, nil
 }

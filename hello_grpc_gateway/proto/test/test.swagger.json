@@ -1,0 +1,95 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "test/test.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "TestService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/sum": {
+      "post": {
+        "operationId": "TestService_Test",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/TestResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TestRequest"
+            }
+          }
+        ],
+        "tags": [
+          "TestService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Nest": {
+      "type": "object",
+      "properties": {
+        "c": {
+          "type": "string"
+        },
+        "d": {
+          "type": "string"
+        }
+      }
+    },
+    "TestRequest": {
+      "type": "object",
+      "properties": {
+        "a": {
+          "type": "string",
+          "format": "int64"
+        },
+        "bI": {
+          "type": "string",
+          "format": "int64"
+        },
+        "n": {
+          "$ref": "#/definitions/Nest"
+        },
+        "fields": {
+          "type": "string"
+        }
+      }
+    },
+    "TestResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "result": {
+          "type": "string",
+          "format": "int64",
+          "title": "google.protobuf.Any custom = 3;"
+        }
+      },
+      "required": [
+        "result"
+      ]
+    }
+  }
+}

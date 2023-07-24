@@ -7,9 +7,10 @@ import (
 	"net/http"
 	"strconv"
 
+	gw "hello_grpc_gateway/proto/test"
+
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	gw "github.com/penril0326/hello_grpc/proto/calculator"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
@@ -41,7 +42,7 @@ func run() error {
 		emitDefault())
 	// mux := runtime.NewServeMux(runtime.WithForwardResponseOption(httpResponseModifier))
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err := gw.RegisterCalculatorServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
+	err := gw.RegisterTestServiceHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
 	if err != nil {
 		return err
 	}

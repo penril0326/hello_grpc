@@ -1,35 +1,36 @@
 syntax = "proto3";
 
-option go_package = "proto/calculator";
+option go_package = "proto/test";
 
 import "google/api/annotations.proto";
 // import "google/protobuf/empty.proto";
 // import "google/protobuf/any.proto";
 import "google/api/field_behavior.proto";
+import "google/protobuf/field_mask.proto";
 // import "proto/protoc-gen-openapiv2/options/annotations.proto";
 
-message CalculatorRequest {
+message TestRequest {
     int64 a = 1;
-    int64 b = 2;
+    int64 b_i = 2;
+    Nest n = 3;
+    google.protobuf.FieldMask fields = 4;
 }
 
-message CalculatorResponse {
+message Nest {
+    string c = 1;
+    string d = 2;
+}
+
+message TestResponse {
     int32 code = 1 [ (google.api.field_behavior) = OPTIONAL ];
     int64 result = 2 [ (google.api.field_behavior) = REQUIRED ];
     // google.protobuf.Any custom = 3;
 }
 
-service CalculatorService {
-    rpc Sum (CalculatorRequest) returns (CalculatorResponse) {
+service TestService {
+    rpc Test (TestRequest) returns (TestResponse) {
         option (google.api.http) = {
             post: "/v1/sum"
-            body: "*"
-        };
-    }
-
-    rpc Diff (CalculatorRequest) returns (CalculatorResponse) {
-        option (google.api.http) = {
-            post: "/v1/diff"
             body: "*"
         };
 
